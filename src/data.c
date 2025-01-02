@@ -26,7 +26,7 @@ int validaData(const Data *data)
     // Calcula ano bissexto
     if ((data->ano % 4 == 0 && data->ano % 100 != 0) || (data->ano % 400 == 0))
     {
-        diasPorMes[feb] = 29; // Ano bissexto, fev tem 29 dias
+        diasPorMes[Feb] = 29; // Ano bissexto, fev tem 29 dias
     }
 
     // valida o dia com base no enum
@@ -42,7 +42,7 @@ int calculaDiaSemana(const Data *data)
     int mes = data->mes;
     int ano = data->ano;
 
-    if (mes == jan || mes == feb)
+    if (mes == Jan || mes == Feb)
     {
         mes += 12;
         ano -= 1;
@@ -58,7 +58,7 @@ int calculaDiaSemana(const Data *data)
     return (h + 6) % 7;
 }
 
-const char* getDiaSemana(int diaSemana)
+const char* obtemDiaSemana(int diaSemana)
 {
     const char* dias[] =
     {
@@ -67,4 +67,9 @@ const char* getDiaSemana(int diaSemana)
 
     // Retorna o dia da semana abreviado 
     return dias[diaSemana];
+}
+
+const char* obtemNomeMes(meses mes) {
+    // validacao feita na inicializacao de Data
+    return nomeMeses[mes];
 }

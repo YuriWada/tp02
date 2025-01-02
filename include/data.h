@@ -1,5 +1,8 @@
 /**
- * TAD auxiliar para retornar o dia da semana e mes em string
+ * TAD auxiliar para retornar o dia da semana e o mes em string,
+ * com base nos dados de entrada. Tambem transforma a hora.
+ * Ex.: 2017 3 21 2 
+ * Deve retornar 2017 Mar Tue 2:00:00
  */
 #ifndef DATA_H
 #define DATA_H
@@ -9,12 +12,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Enum para retornar os valores correspondentes aos meses
+// Enum com os valores correspondentes aos meses
 typedef enum
 {
-    jan = 1, feb, mar, apr, may, jun,
-    jul, aug, sep, oct, nov, dec
+    Jan = 1, Feb, Mar, Apr, May, Jun,
+    Jul, Aug, Sep, Oct, Nov, Dec
 } meses;
+
+// Array que corresponde às chaves do enum "meses"
+const char* nomeMeses[] = {
+    "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+};
 
 // TAD que representa as datas
 typedef struct
@@ -44,6 +53,11 @@ int calculaDiaSemana(const Data *data);
  * Retorna o dia da semana em char
  * Os dias estao abreviados em ingles
  */
-const char* getDiaSemana(int diaSemana);
+const char* obtemDiaSemana(int diaSemana);
+
+/**
+ * Obtem o nome do mês a partir do valor do enum
+ */
+const char* obtemNomeMes(meses mes);
 
 #endif /* DATA_H */

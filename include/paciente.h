@@ -49,6 +49,14 @@ typedef struct
     float tempoAtendimento; // calcula o tempo total em que o paciente foi atendido
 } Paciente;
 
+
+// TAD auxiliar para transformacao da data de entrada
+typedef struct
+{
+    const char* diaSemana;
+    const char* nomeMes;
+} DiaMes;
+
 // Inicializa as variaveis do paciente
 void inicializaPaciente(Paciente *paciente, int id, int alta, int ano, int mes, int dia, int hora, 
                         int urgencia, int medidasH, int testesL, int examesI, int instrumentosM);
@@ -67,6 +75,11 @@ void registraTempoEspera(Paciente *paciente, float tempo);
  * Registra tempo de atendimento do paciente em cada atendimento
  */
 void registraTempoAtendimento(Paciente *paciente, float tempo);
+
+/**
+ * Define a data de entrada e saida do paciente no formato especificado pelo TP
+ */
+DiaMes defineDataString(Paciente *paciente);
 
 /**
  * Imprime as informacoes do paciente conforme output especificado pelo TP

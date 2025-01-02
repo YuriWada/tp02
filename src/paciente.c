@@ -37,7 +37,22 @@ void registraTempoAtendimento(Paciente *paciente, float tempo)
     paciente->tempoAtendimento += tempo;
 }
 
+DiaMes defineDataString(Paciente *paciente)
+{
+    Data data;
+    int iniciaData = inicializaData(&data, paciente->dia, paciente->mes, paciente->ano);
+    // Validacao de entrada
+    erroAssert(iniciaData==1, "Data invalida!");
+
+    int diaSemana = calculaDiaSemana(&data);
+
+    DiaMes diaMes;
+    diaMes.diaSemana = obtemDiaSemana(diaSemana);
+    diaMes.nomeMes =obtemNomeMes(data.mes);
+    return diaMes;
+}
+
 void imprimePaciente(const Paciente *paciente)
 {
-    // implementa imprimePaciente
+    //printf("%d %c %c %d ");
 }
