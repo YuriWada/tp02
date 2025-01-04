@@ -31,18 +31,19 @@ typedef struct
     int dia;
     meses mes; // meses do ano com base no enum "meses"
     int ano;
+    float hora; // armazena a hora de entrada/saida
 } Data;
 
 /**
  * Inicializa as variaveis de data e verifica a validade 
  * das datas de entrada
  */
-int inicializaData(Data *data, int dia, meses mes, int ano);
+int inicializaData(Data *data, int dia, meses mes, int ano, float hora);
 
 /**
  * Valida a data conforme dia, mes e ano (bissexto)
  */
-int validaData(const Data *Data);
+int validaData(const Data *data);
 
 /**
  * Calcula o dia da semana usando Algoritmo de Zeller
@@ -59,5 +60,10 @@ const char* obtemDiaSemana(int diaSemana);
  * Obtem o nome do mês a partir do valor do enum
  */
 const char* obtemNomeMes(meses mes);
+
+/**
+ * transforma a hora para o formato hh:mm:ss
+ */
+const char* transformaHora(const Data *data);
 
 #endif /* DATA_H */

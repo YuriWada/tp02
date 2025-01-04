@@ -1,22 +1,25 @@
 #include "../include/data.h"
 
-int inicializaData(Data *data, int dia, meses mes, int ano)
+int inicializaData(Data *data, int dia, meses mes, int ano, float hora)
 {
     // Verificacao de datas de entrada
-    erroAssert(dia>0, "Data invalida!");
-    erroAssert(dia<=31, "Data invalida!");
-    erroAssert(mes>0, "Data invalida!");
-    erroAssert(mes<=12, "Data invalida!");
+    erroAssert(data != NULL, "Ponteiro nulo para Data.");
+    erroAssert(dia > 0 && dia <= 31, "Data invalida!");
+    erroAssert(mes >= Jan && mes <= Dec, "Data invalida!");
+    erroAssert(hora >= 0.0f && hora < 24.0f, "Data invalida!");
 
     data->dia = dia;
     data->mes = mes;
     data->ano = ano;
+    data->hora = hora;
 
     return validaData(data);
 }
 
 int validaData(const Data *data)
 {
+    erroAssert(data != NULL, "Ponteiro nulo para Data.");
+
     // Distribui os dias max de cada mes
     // OBS: inicializa com 0
     int diasPorMes[] = {
@@ -31,13 +34,13 @@ int validaData(const Data *data)
 
     // valida o dia com base no enum
     // o mes nao pode ter mais dias que o diaPorMes
-    if (data->dia < 1 || data->dia > diasPorMes[data->mes]) return 0;
-
-    return 1;
+    return data->dia <= diasPorMes[data->mes];
 }
 
 int calculaDiaSemana(const Data *data)
 {
+    erroAssert(data != NULL, "Ponteiro nulo para Data.");
+
     int dia = data->dia;
     int mes = data->mes;
     int ano = data->ano;
@@ -58,18 +61,35 @@ int calculaDiaSemana(const Data *data)
     return (h + 6) % 7;
 }
 
-const char* obtemDiaSemana(int diaSemana)
+const char *obtemDiaSemana(int diaSemana)
 {
-    const char* dias[] =
-    {
-        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    const char *dias[] = {
+            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
     };
 
-    // Retorna o dia da semana abreviado 
+    // Retorna o dia da semana abreviado
     return dias[diaSemana];
 }
 
-const char* obtemNomeMes(meses mes) {
+const char *obtemNomeMes(meses mes)
+{
+    erroAssert(mes >= Jan && mes <= Dec, "Mes invalido.");
     // validacao feita na inicializacao de Data
     return nomeMeses[mes];
+}
+
+const char *transformaHora(const Data *data)
+{
+    erroAssert(data != NULL, "Ponteiro nulo para Data.");
+    
+    int hora = (int)data->hora;                                        // obtem a parte inteira
+    int minutos = (int)((data->hora - hora) * 60);                     // converte parte fracionaria em minutos
+    int segundos = (int)((((data->hora - hora) * 60) - minutos) * 60); // parte restante convertida para segundos
+
+    // Buffer estatico para armazenar o resultado
+    static char buffer[9];
+
+    // formatando a string no formato hh:mm:ss
+    sprintf(buffer, "%02d:%02d:%02d", hora, minutos, segundos);
+    return buffer;
 }

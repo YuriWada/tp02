@@ -36,7 +36,8 @@ typedef struct
 {
     int id;
     int alta;
-    int ano, mes, dia, hora;
+    int ano, mes, dia;
+    float hora;
     int urgencia;
     int medidasHospitalares;
     int testesLaboratorio;
@@ -47,6 +48,9 @@ typedef struct
     EstadoPaciente estadoAtual;
     float tempoEspera; // calcula o tempo total nas filas
     float tempoAtendimento; // calcula o tempo total em que o paciente foi atendido
+
+    int anoSaida, mesSaida, diaSaida;
+    float horaSaida;
 } Paciente;
 
 
@@ -58,7 +62,7 @@ typedef struct
 } DiaMes;
 
 // Inicializa as variaveis do paciente
-void inicializaPaciente(Paciente *paciente, int id, int alta, int ano, int mes, int dia, int hora, 
+void inicializaPaciente(Paciente *paciente, int id, int alta, int ano, int mes, int dia, float hora, 
                         int urgencia, int medidasH, int testesL, int examesI, int instrumentosM);
 
 /**
@@ -77,9 +81,14 @@ void registraTempoEspera(Paciente *paciente, float tempo);
 void registraTempoAtendimento(Paciente *paciente, float tempo);
 
 /**
- * Define a data de entrada e saida do paciente no formato especificado pelo TP
+ * Transforma a data de entrada e saida do paciente no formato especificado pelo TP
  */
 DiaMes defineDataString(Paciente *paciente);
+
+/**
+ * Registra o novo horario de saida do paciente, com base no tempo que permaneceu no HZ
+ */
+void calculaSaida(Paciente *paciente);
 
 /**
  * Imprime as informacoes do paciente conforme output especificado pelo TP
