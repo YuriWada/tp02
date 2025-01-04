@@ -45,7 +45,7 @@ void registraTempoAtendimento(Paciente *paciente, float tempo)
     paciente->tempoAtendimento += tempo;
 }
 
-DiaMes defineDataString(Paciente *paciente)
+DiaMes defineDataString(const Paciente *paciente)
 {
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
 
@@ -58,32 +58,38 @@ DiaMes defineDataString(Paciente *paciente)
     return diaMes;
 }
 
-void calculaSaida(Paciente *paciente)
-{
+void calculaSaida(Paciente *paciente) {
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
 
+    // Calcula o tempo total no hospital
     float tempoTotal = paciente->tempoAtendimento + paciente->tempoEspera;
-    paciente->horaSaida = paciente->hora + tempoTotal;
 
-    while (paciente->horaSaida >= 24.0f)
-    {
-        paciente->horaSaida -= 24.0f;
-        paciente->diaSaida++;
-    }
+    // Configura uma cópia da data de entrada
+    Data dataSaida;
+    inicializaData(&dataSaida, paciente->dia, paciente->mes, paciente->ano, paciente->hora);
 
-    // Atualiza mes e ano conforme necessário
-    Data data;
-    inicializaData(&data, paciente->diaSaida, paciente->mes, paciente->ano, 0.0f);
-    if (!validaData(&data))
-    {
-        paciente->diaSaida = 1;
-        paciente->mesSaida++;
-        if (paciente->mesSaida > Dec)
-        {
-            paciente->mesSaida = Jan;
-            paciente->anoSaida++;
+    // Adiciona o tempo total ao horário da entrada
+    dataSaida.hora += tempoTotal;
+
+    // Ajusta o horário se ultrapassar 24h
+    while (dataSaida.hora >= 24.0f) {
+        dataSaida.hora -= 24.0f;
+        dataSaida.dia++;
+        if (!validaData(&dataSaida)) {
+            dataSaida.dia = 1;
+            dataSaida.mes++;
+            if (dataSaida.mes > Dec) {
+                dataSaida.mes = Jan;
+                dataSaida.ano++;
+            }
         }
     }
+
+    // Atualiza a data de saída no paciente
+    paciente->diaSaida = dataSaida.dia;
+    paciente->mesSaida = dataSaida.mes;
+    paciente->anoSaida = dataSaida.ano;
+    paciente->horaSaida = dataSaida.hora;
 }
 
 void imprimePaciente(const Paciente *paciente)

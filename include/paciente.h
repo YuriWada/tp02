@@ -83,7 +83,7 @@ void registraTempoAtendimento(Paciente *paciente, float tempo);
 /**
  * Transforma a data de entrada e saida do paciente no formato especificado pelo TP
  */
-DiaMes defineDataString(Paciente *paciente);
+DiaMes defineDataString(const Paciente *paciente);
 
 /**
  * Registra o novo horario de saida do paciente, com base no tempo que permaneceu no HZ

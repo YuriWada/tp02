@@ -1,5 +1,11 @@
 #include "../include/data.h"
 
+// Array que corresponde às chaves do enum "meses"
+const char* nomeMeses[] = {
+    "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+};
+
 int inicializaData(Data *data, int dia, meses mes, int ano, float hora)
 {
     // Verificacao de datas de entrada
