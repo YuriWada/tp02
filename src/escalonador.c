@@ -2,20 +2,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void trocaEventos(Evento *a, Evento *b)
-{
+void trocaEventos(Evento *a, Evento *b) {
     Evento temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void sobeHeap(Escalonador *escalonador, int indice)
-{
-    while (indice > 0)
-    {
+void sobeHeap(Escalonador *escalonador, int indice) {
+    while (indice > 0) {
         int pai = (indice - 1) / 2;
-        if (escalonador->heap[indice].tempo >= escalonador->heap[pai].tempo)
-        {
+        if (escalonador->heap[indice].tempo >= escalonador->heap[pai].tempo) {
             break;
         }
         trocaEventos(&escalonador->heap[indice], &escalonador->heap[pai]);
@@ -23,47 +19,44 @@ void sobeHeap(Escalonador *escalonador, int indice)
     }
 }
 
-void desceHeap(Escalonador *escalonador, int indice)
-{
+void desceHeap(Escalonador *escalonador, int indice) {
     int menor = indice;
     int esquerda = 2 * indice + 1;
     int direita = 2 * indice + 2;
 
     if (esquerda < escalonador->tamanho &&
-        escalonador->heap[esquerda].tempo < escalonador->heap[menor].tempo)
-    {
+        escalonador->heap[esquerda].tempo < escalonador->heap[menor].tempo) {
         menor = esquerda;
     }
     if (direita < escalonador->tamanho &&
-        escalonador->heap[direita].tempo < escalonador->heap[menor].tempo)
-    {
+        escalonador->heap[direita].tempo < escalonador->heap[menor].tempo) {
         menor = direita;
     }
-    if (menor != indice)
-    {
+    if (menor != indice) {
         trocaEventos(&escalonador->heap[indice], &escalonador->heap[menor]);
         desceHeap(escalonador, menor);
     }
 }
 
-void inicializaEscalonador(Escalonador *escalonador, int capacidade, Configuracoes *config)
-{
+void inicializaEscalonador(Escalonador *escalonador, int capacidade, Configuracoes *config) {
+    if (capacidade < 10) capacidade = 10; // Capacidade inicial mínima
+
     escalonador->heap = (Evento *)malloc(capacidade * sizeof(Evento));
     erroAssert(escalonador->heap != NULL, "Erro ao alocar memória para o escalonador.");
+
     escalonador->tamanho = 0;
     escalonador->capacidade = capacidade;
     escalonador->config = config;
 
-    for (int i = 0; i < 5; i++)
-    {
+    for (int i = 0; i < 5; i++) {
         inicializaFila(&escalonador->filas[i]);
+        escalonador->tempoUltimoServico[i] = 0.0f;
+        escalonador->tempoOciosoUnidades[i] = 0.0f;
     }
 }
 
-void insereEvento(Escalonador *escalonador, float tempo, int tipo, Paciente *paciente)
-{
-    if (escalonador->tamanho == escalonador->capacidade)
-    {
+void insereEvento(Escalonador *escalonador, float tempo, int tipo, Paciente *paciente) {
+    if (escalonador->tamanho == escalonador->capacidade) {
         escalonador->capacidade *= 2;
         escalonador->heap = (Evento *)realloc(escalonador->heap, escalonador->capacidade * sizeof(Evento));
         erroAssert(escalonador->heap != NULL, "Erro ao realocar memória para o escalonador.");
@@ -77,8 +70,7 @@ void insereEvento(Escalonador *escalonador, float tempo, int tipo, Paciente *pac
     escalonador->tamanho++;
 }
 
-Evento retiraProximoEvento(Escalonador *escalonador)
-{
+Evento retiraProximoEvento(Escalonador *escalonador) {
     erroAssert(escalonador->tamanho > 0, "Tentativa de retirar evento de um escalonador vazio.");
 
     Evento proximo = escalonador->heap[0];
@@ -88,18 +80,20 @@ Evento retiraProximoEvento(Escalonador *escalonador)
     return proximo;
 }
 
-void processaEventos(Escalonador *escalonador)
-{
-    while (escalonador->tamanho > 0)
-    {
+void processaEventos(Escalonador *escalonador) {
+    while (escalonador->tamanho > 0) {
         Evento evento = retiraProximoEvento(escalonador);
         Paciente *paciente = evento.paciente;
+
+        // Atualiza o tempo ocioso da unidade
+        int tipoUnidade = evento.tipo - 1; // Determina o índice da unidade associada
+        escalonador->tempoOciosoUnidades[tipoUnidade] += evento.tempo - escalonador->tempoUltimoServico[tipoUnidade];
+        escalonador->tempoUltimoServico[tipoUnidade] = evento.tempo;
 
         // Atualiza o estado do paciente
         atualizaEstado(paciente, evento.tipo);
 
-        switch (evento.tipo)
-        {
+        switch (evento.tipo) {
         case 1: // Triagem
             registraTempoAtendimento(paciente, escalonador->config->tempoTriagem);
             insereEvento(escalonador, evento.tempo + escalonador->config->tempoTriagem, 2, paciente);
@@ -107,23 +101,13 @@ void processaEventos(Escalonador *escalonador)
 
         case 2: // Atendimento
             registraTempoAtendimento(paciente, escalonador->config->tempoAtendimento);
-
-            // Adiciona eventos para os procedimentos subsequentes
-            if (paciente->medidasHospitalares > 0)
-            {
+            if (paciente->medidasHospitalares > 0) {
                 insereEvento(escalonador, evento.tempo + escalonador->config->tempoAtendimento, 3, paciente);
-            }
-            else if (paciente->testesLaboratorio > 0)
-            {
+            } else if (paciente->testesLaboratorio > 0) {
                 insereEvento(escalonador, evento.tempo + escalonador->config->tempoAtendimento, 4, paciente);
-            }
-            else if (paciente->examesImagem > 0)
-            {
+            } else if (paciente->examesImagem > 0) {
                 insereEvento(escalonador, evento.tempo + escalonador->config->tempoAtendimento, 5, paciente);
-            }
-            else
-            {
-                // Paciente liberado após atendimento
+            } else {
                 calculaSaida(paciente);
                 paciente->estadoAtual = ALTA_HOSP;
             }
@@ -141,8 +125,6 @@ void processaEventos(Escalonador *escalonador)
 
         case 5: // Exames de Imagem
             registraTempoAtendimento(paciente, escalonador->config->tempoEI);
-
-            // Paciente liberado após último procedimento
             calculaSaida(paciente);
             paciente->estadoAtual = ALTA_HOSP;
             break;
@@ -150,10 +132,8 @@ void processaEventos(Escalonador *escalonador)
     }
 }
 
-void finalizaEscalonador(Escalonador *escalonador)
-{
-    for (int i = 0; i < 5; i++)
-    {
+void finalizaEscalonador(Escalonador *escalonador) {
+    for (int i = 0; i < 5; i++) {
         finalizaFila(&escalonador->filas[i]);
     }
     free(escalonador->heap);

@@ -5,17 +5,17 @@
 
 // Configurações gerais da simulação
 typedef struct {
-    int tempoTriagem;
+    float tempoTriagem;
     int numTriagem;
-    int tempoAtendimento;
+    float tempoAtendimento;
     int numAtendimento;
-    int tempoMH;
+    float tempoMH;
     int numMH;
-    int tempoTL;
+    float tempoTL;
     int numTL;
-    int tempoEI;
+    float tempoEI;
     int numEI;
-    int tempoIM;
+    float tempoIM;
     int numIM;
     int numPacientes;
 } Configuracoes;

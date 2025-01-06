@@ -7,22 +7,20 @@
 #include <stdlib.h>
 
 // Estrutura de um no da Fila
-typedef struct NoFila
-{
+typedef struct NoFila {
     Paciente *paciente;     // ponteiro para o Paciente
-    float tempoEntrada;     // tempo em que o paciente entrou na filha
-    struct NoFila *proximo; // ponteiro para o proximo no
+    float tempoEntrada;     // tempo em que o paciente entrou na fila
+    struct NoFila *proximo; // ponteiro para o próximo nó
 } NoFila;
 
-// TAD Fila conforme especificacao do TP2
-typedef struct
-{
-    NoFila *inicio;          // ponteiro para inicio da fila
+// TAD Fila conforme especificação do TP2
+typedef struct {
+    NoFila *inicio;          // ponteiro para início da fila
     NoFila *fim;             // ponteiro para o final da fila
-    int tamanho;             // numero de pacientes na fila
+    int tamanho;             // número de pacientes na fila
     float tempoTotalEspera;  // tempo total de espera dos pacientes
     float somaTamanhosFila;  // soma dos tamanhos da fila ao longo do tempo
-    int amostrasTamanhoFila; // numero de amostras para calcular o tamanho medio
+    int amostrasTamanhoFila; // número de amostras para calcular o tamanho médio
 } Fila;
 
 /**
@@ -36,12 +34,12 @@ void inicializaFila(Fila *fila);
 void enfileira(Fila *fila, Paciente *paciente, float tempoAtual);
 
 /**
- * Remove um paciente do inicio da fila
+ * Remove um paciente do início da fila
  */
-Paciente *desenfileira(Fila *fila, float tempoATual);
+Paciente *desenfileira(Fila *fila, float tempoAtual);
 
 /**
- * Verifica se a fila esta vazia
+ * Verifica se a fila está vazia
  */
 int filaVazia(Fila *fila);
 
@@ -49,5 +47,10 @@ int filaVazia(Fila *fila);
  * Finaliza a fila
  */
 void finalizaFila(Fila *fila);
+
+/**
+ * Calcula estatísticas da fila
+ */
+void calculaEstatisticasFila(Fila *fila, float *tempoMedioEspera, float *tamanhoMedioFila);
 
 #endif /* FILA_H */

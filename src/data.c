@@ -1,6 +1,6 @@
 #include "../include/data.h"
 
-// Array que corresponde às chaves do enum "meses"
+// Definição única de nomeMeses
 const char* nomeMeses[] = {
     "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -26,21 +26,20 @@ int validaData(const Data *data)
 {
     erroAssert(data != NULL, "Ponteiro nulo para Data.");
 
-    // Distribui os dias max de cada mes
-    // OBS: inicializa com 0
-    int diasPorMes[] = {
-        0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-    };
+    int diasPorMes[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     // Calcula ano bissexto
-    if ((data->ano % 4 == 0 && data->ano % 100 != 0) || (data->ano % 400 == 0))
-    {
-        diasPorMes[Feb] = 29; // Ano bissexto, fev tem 29 dias
+    if ((data->ano % 4 == 0 && data->ano % 100 != 0) || (data->ano % 400 == 0)) {
+        diasPorMes[Feb] = 29;
     }
 
-    // valida o dia com base no enum
-    // o mes nao pode ter mais dias que o diaPorMes
-    return data->dia <= diasPorMes[data->mes];
+    // Valida o dia
+    if (data->dia < 1 || data->dia > diasPorMes[data->mes]) return 0;
+
+    // Valida a hora
+    if (data->hora < 0.0f || data->hora >= 24.0f) return 0;
+
+    return 1;
 }
 
 int calculaDiaSemana(const Data *data)
@@ -51,19 +50,21 @@ int calculaDiaSemana(const Data *data)
     int mes = data->mes;
     int ano = data->ano;
 
-    if (mes == Jan || mes == Feb)
-    {
+    if (mes == Jan || mes == Feb) {
         mes += 12;
         ano -= 1;
     }
 
-    int K = ano % 100; // recebe os ultimos 2 digitos do ano
-    int J = ano / 100; // recebe os primeiros 2 digitos do ano
+    int K = ano % 100; // Últimos 2 dígitos do ano
+    int J = ano / 100; // Primeiros 2 dígitos do ano
 
-    // Aplica algoritmo de Zeller
+    // Aplica o Algoritmo de Zeller
     int h = (dia + (13 * (mes + 1)) / 5 + K + (K / 4) + (J / 4) - 2 * J) % 7;
 
-    // retorna 0 para domingo, 1 segunda, 2 terca, etc.
+    // Ajusta para valores positivos
+    h = (h + 7) % 7;
+
+    // Retorna o valor ajustado (0: Domingo, ..., 6: Sábado)
     return (h + 6) % 7;
 }
 

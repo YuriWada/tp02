@@ -6,21 +6,21 @@
 #include "learquivo.h"
 
 // Estrutura de um evento no escalonador
-typedef struct
-{
+typedef struct {
     float tempo;        // Tempo do evento (em horas)
     int tipo;           // Tipo do evento (1: triagem, 2: atendimento, etc.)
     Paciente *paciente; // Ponteiro para o paciente associado
 } Evento;
 
 // Estrutura principal do TAD Escalonador
-typedef struct
-{
-    Evento *heap;          // Array usado como Min-Heap
-    int tamanho;           // Número de eventos no heap
-    int capacidade;        // Capacidade máxima do heap
-    Configuracoes *config; // Ponteiro para configurações do sistema
-    Fila filas[5];         // Filas associadas a cada tipo de procedimento
+typedef struct {
+    Evento *heap;            // Array usado como Min-Heap
+    int tamanho;             // Número de eventos no heap
+    int capacidade;          // Capacidade máxima do heap
+    Configuracoes *config;   // Ponteiro para configurações do sistema
+    Fila filas[5];           // Filas associadas a cada tipo de procedimento
+    float tempoUltimoServico[5];   // Tempo do último serviço em cada unidade
+    float tempoOciosoUnidades[5];  // Tempo ocioso acumulado por unidade
 } Escalonador;
 
 /**

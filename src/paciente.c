@@ -1,8 +1,11 @@
 #include "../include/paciente.h"
 
+/**
+ * Inicializa os dados do paciente com os valores fornecidos.
+ */
 void inicializaPaciente(Paciente *paciente, int id, int alta, int ano, int mes, int dia, float hora,
-                        int urgencia, int medidasH, int testesL, int examesI, int instrumentosM)
-{
+                        int urgencia, int medidasH, int testesL, int examesI, int instrumentosM) {
+    // Atribui valores básicos
     paciente->id = id;
     paciente->alta = alta;
     paciente->ano = ano;
@@ -15,38 +18,46 @@ void inicializaPaciente(Paciente *paciente, int id, int alta, int ano, int mes, 
     paciente->examesImagem = examesI;
     paciente->instrumentosMedicamentos = instrumentosM;
 
-    // Inicializacao das estatisticas
-    // Tempo total HZ = tempoEspera + tempoAtendimento, neste caso inicializa 0
+    // Inicializa estatísticas
     paciente->estadoAtual = NAO_CHEGOU;
     paciente->tempoEspera = 0.0f;
     paciente->tempoAtendimento = 0.0f;
 
+    // Inicializa data de saída
     paciente->anoSaida = 0;
     paciente->mesSaida = 0;
     paciente->diaSaida = 0;
     paciente->horaSaida = 0.0f;
 }
 
-void atualizaEstado(Paciente *paciente, EstadoPaciente novoEstado)
-{
+/**
+ * Atualiza o estado atual do paciente.
+ */
+void atualizaEstado(Paciente *paciente, EstadoPaciente novoEstado) {
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
     paciente->estadoAtual = novoEstado;
 }
 
-void registraTempoEspera(Paciente *paciente, float tempo)
-{
+/**
+ * Registra o tempo de espera total do paciente.
+ */
+void registraTempoEspera(Paciente *paciente, float tempo) {
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
     paciente->tempoEspera += tempo;
 }
 
-void registraTempoAtendimento(Paciente *paciente, float tempo)
-{
+/**
+ * Registra o tempo total de atendimento do paciente.
+ */
+void registraTempoAtendimento(Paciente *paciente, float tempo) {
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
     paciente->tempoAtendimento += tempo;
 }
 
-DiaMes defineDataString(const Paciente *paciente)
-{
+/**
+ * Transforma a data do paciente no formato Dia da Semana e Nome do Mês.
+ */
+DiaMes defineDataString(const Paciente *paciente) {
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
 
     Data data;
@@ -58,20 +69,22 @@ DiaMes defineDataString(const Paciente *paciente)
     return diaMes;
 }
 
+/**
+ * Calcula a data e horário de saída do paciente com base no tempo total de permanência no hospital.
+ */
 void calculaSaida(Paciente *paciente) {
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
 
     // Calcula o tempo total no hospital
     float tempoTotal = paciente->tempoAtendimento + paciente->tempoEspera;
 
-    // Configura uma cópia da data de entrada
     Data dataSaida;
     inicializaData(&dataSaida, paciente->dia, paciente->mes, paciente->ano, paciente->hora);
 
     // Adiciona o tempo total ao horário da entrada
     dataSaida.hora += tempoTotal;
 
-    // Ajusta o horário se ultrapassar 24h
+    // Ajusta o horário e a data se ultrapassar limites
     while (dataSaida.hora >= 24.0f) {
         dataSaida.hora -= 24.0f;
         dataSaida.dia++;
@@ -85,15 +98,17 @@ void calculaSaida(Paciente *paciente) {
         }
     }
 
-    // Atualiza a data de saída no paciente
+    // Atualiza os campos de saída no paciente
     paciente->diaSaida = dataSaida.dia;
     paciente->mesSaida = dataSaida.mes;
     paciente->anoSaida = dataSaida.ano;
     paciente->horaSaida = dataSaida.hora;
 }
 
-void imprimePaciente(const Paciente *paciente)
-{
+/**
+ * Imprime as informações do paciente no formato especificado pelo TP.
+ */
+void imprimePaciente(const Paciente *paciente) {
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
 
     // Data de entrada
@@ -110,10 +125,10 @@ void imprimePaciente(const Paciente *paciente)
     diaMesSaida.nomeMes = obtemNomeMes(dataSaida.mes);
     const char *horaSaida = transformaHora(&dataSaida);
 
-    // Cálculo do tempo total no HZ
+    // Tempo total no hospital
     float tempoTotal = paciente->tempoAtendimento + paciente->tempoEspera;
 
-    // Impressão formatada
+    // Imprime os dados formatados
     printf("%d %s %s %02d %s %04d %s %s %02d %s %04d %.2f %.2f %.2f\n",
            paciente->id,
            diaMesEntrada.diaSemana, diaMesEntrada.nomeMes, dataEntrada.dia, horaEntrada, dataEntrada.ano,

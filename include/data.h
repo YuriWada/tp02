@@ -19,6 +19,9 @@ typedef enum
     Jul, Aug, Sep, Oct, Nov, Dec
 } meses;
 
+// Array que corresponde às chaves do enum "meses"
+extern const char* nomeMeses[];
+
 // TAD que representa as datas
 typedef struct
 {
