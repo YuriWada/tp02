@@ -1,0 +1,148 @@
+Script started on 2025-01-07 18:47:10-03:00 [TERM="xterm-256color" TTY="/dev/pts/5" COLUMNS="176" LINES="11"]
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make clean
+[?2004lrm -rf obj/*.o bin/*
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make all
+[?2004lmkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/data.c -o obj/data.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/escalonador.c -o obj/escalonador.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/fila.c -o obj/fila.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/learquivo.c -o obj/learquivo.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/main.c -o obj/main.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/paciente.c -o obj/paciente.o
+mkdir -p bin
+gcc -Wall -Wextra -std=c17 -g -o bin/tp3.out obj/data.o obj/escalonador.o obj/fila.o obj/learquivo.o obj/main.o obj/paciente.o
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make allclean[6Pexitvalgrind --leak-check=full ./bin/tp3.out 20242TP2.csv
+[?2004l==6436== Memcheck, a memory error detector
+==6436== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==6436== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==6436== Command: ./bin/tp3.out 20242TP2.csv
+==6436== 
+==6436== Conditional jump or move depends on uninitialised value(s)
+==6436==    at 0x10A1D2: processaEventos (escalonador.c:173)
+==6436==    by 0x10AF37: main (main.c:34)
+==6436== 
+^C==6436== 
+==6436== Process terminating with default action of signal 2 (SIGINT)
+==6436==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6436==    by 0x10A3F0: enfileira (fila.c:32)
+==6436==    by 0x10A046: processaEventos (escalonador.c:134)
+==6436==    by 0x10AF37: main (main.c:34)
+==6436== 
+==6436== HEAP SUMMARY:
+==6436==     in use at exit: 12,595,728 bytes in 3 blocks
+==6436==   total heap usage: 4,819,075 allocs, 4,819,072 frees, 128,257,976 bytes allocated
+==6436== 
+==6436== 24 bytes in 1 blocks are definitely lost in loss record 1 of 3
+==6436==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6436==    by 0x10A3F0: enfileira (fila.c:32)
+==6436==    by 0x10A046: processaEventos (escalonador.c:134)
+==6436==    by 0x10AF37: main (main.c:34)
+==6436== 
+==6436== LEAK SUMMARY:
+==6436==    definitely lost: 24 bytes in 1 blocks
+==6436==    indirectly lost: 0 bytes in 0 blocks
+==6436==      possibly lost: 0 bytes in 0 blocks
+==6436==    still reachable: 12,595,704 bytes in 2 blocks
+==6436==         suppressed: 0 bytes in 0 blocks
+==6436== Reachable blocks (those to which a pointer was found) are not shown.
+==6436== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==6436== 
+==6436== Use --track-origins=yes to see where uninitialised values come from
+==6436== For lists of detected and suppressed errors, rerun with: -s
+==6436== ERROR SUMMARY: 4825889 errors from 2 contexts (suppressed: 0 from 0)
+
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make clean
+[?2004lrm -rf obj/*.o bin/*
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make all
+[?2004lmkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/data.c -o obj/data.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/escalonador.c -o obj/escalonador.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/fila.c -o obj/fila.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/learquivo.c -o obj/learquivo.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/main.c -o obj/main.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/paciente.c -o obj/paciente.o
+mkdir -p bin
+gcc -Wall -Wextra -std=c17 -g -o bin/tp3.out obj/data.o obj/escalonador.o obj/fila.o obj/learquivo.o obj/main.o obj/paciente.o
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make allcleanvalgrind --leak-check=full ./bin/tp3.out 20242TP2.csv
+[?2004l==7566== Memcheck, a memory error detector
+==7566== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==7566== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==7566== Command: ./bin/tp3.out 20242TP2.csv
+==7566== 
+^C==7566== 
+==7566== Process terminating with default action of signal 2 (SIGINT)
+==7566==    at 0x109EF9: retiraProximoEvento (escalonador.c:97)
+==7566==    by 0x109F23: processaEventos (escalonador.c:107)
+==7566==    by 0x10AF37: main (main.c:34)
+==7566== 
+==7566== HEAP SUMMARY:
+==7566==     in use at exit: 12,595,704 bytes in 2 blocks
+==7566==   total heap usage: 12,533,780 allocs, 12,533,778 frees, 313,410,896 bytes allocated
+==7566== 
+==7566== LEAK SUMMARY:
+==7566==    definitely lost: 0 bytes in 0 blocks
+==7566==    indirectly lost: 0 bytes in 0 blocks
+==7566==      possibly lost: 0 bytes in 0 blocks
+==7566==    still reachable: 12,595,704 bytes in 2 blocks
+==7566==         suppressed: 0 bytes in 0 blocks
+==7566== Reachable blocks (those to which a pointer was found) are not shown.
+==7566== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==7566== 
+==7566== For lists of detected and suppressed errors, rerun with: -s
+==7566== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make clean
+[?2004lrm -rf obj/*.o bin/*
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make all
+[?2004lmkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/data.c -o obj/data.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/escalonador.c -o obj/escalonador.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/fila.c -o obj/fila.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/learquivo.c -o obj/learquivo.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/main.c -o obj/main.o
+mkdir -p obj
+gcc -Wall -Wextra -std=c17 -g -Iinclude -c src/paciente.c -o obj/paciente.o
+mkdir -p bin
+gcc -Wall -Wextra -std=c17 -g -o bin/tp3.out obj/data.o obj/escalonador.o obj/fila.o obj/learquivo.o obj/main.o obj/paciente.o
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make allcleanvalgrind --leak-check=full ./bin/tp3.out 20242TP2.csv
+[?2004l==7898== Memcheck, a memory error detector
+==7898== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==7898== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==7898== Command: ./bin/tp3.out 20242TP2.csv
+==7898== 
+^C==7898== 
+==7898== Process terminating with default action of signal 2 (SIGINT)
+==7898==    at 0x10A1B0: processaEventos (escalonador.c:171)
+==7898==    by 0x10AF37: main (main.c:34)
+==7898== 
+==7898== HEAP SUMMARY:
+==7898==     in use at exit: 12,595,728 bytes in 3 blocks
+==7898==   total heap usage: 77,507,310 allocs, 77,507,307 frees, 1,872,775,616 bytes allocated
+==7898== 
+==7898== LEAK SUMMARY:
+==7898==    definitely lost: 0 bytes in 0 blocks
+==7898==    indirectly lost: 0 bytes in 0 blocks
+==7898==      possibly lost: 0 bytes in 0 blocks
+==7898==    still reachable: 12,595,728 bytes in 3 blocks
+==7898==         suppressed: 0 bytes in 0 blocks
+==7898== Reachable blocks (those to which a pointer was found) are not shown.
+==7898== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==7898== 
+==7898== For lists of detected and suppressed errors, rerun with: -s
+==7898== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+[?2004h]0;yuriwada@BOOK-VI50OVB0DR: ~/tp02[01;32myuriwada@BOOK-VI50OVB0DR[00m:[01;34m~/tp02[00m$ make cleanvalgrind --leak-check=full

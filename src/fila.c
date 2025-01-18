@@ -123,7 +123,7 @@ void calculaEstatisticasFila(Fila *fila, float *tempoMedioEspera, float *tamanho
     erroAssert(fila != NULL, "Tentativa de calcular estatísticas de uma fila nula.");
 
     // Calcula o tempo médio de espera
-    *tempoMedioEspera = fila->tamanho > 0 ? fila->tempoTotalEspera / fila->tamanho : 0.0f;
+    *tempoMedioEspera = fila->amostrasTamanhoFila > 0 ? fila->tempoTotalEspera / fila->amostrasTamanhoFila : 0.0f;
 
     // Calcula o tamanho médio da fila
     *tamanhoMedioFila = fila->amostrasTamanhoFila > 0 ? fila->somaTamanhosFila / fila->amostrasTamanhoFila : 0.0f;
