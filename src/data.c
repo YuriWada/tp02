@@ -8,38 +8,34 @@ const char* nomeMeses[] = {
 
 int inicializaData(Data *data, int dia, meses mes, int ano, float hora)
 {
-    // Verificacao de datas de entrada
     erroAssert(data != NULL, "Ponteiro nulo para Data.");
-    erroAssert(dia > 0 && dia <= 31, "Data invalida!");
-    erroAssert(mes >= Jan && mes <= Dec, "Data invalida!");
-    erroAssert(hora >= 0.0f && hora < 24.0f, "Data invalida!");
+    erroAssert(hora >= 0.0f && hora < 24.0f, "Hora inválida.");
+    erroAssert(mes >= Jan && mes <= Dec, "Mês inválido.");
 
     data->dia = dia;
     data->mes = mes;
     data->ano = ano;
     data->hora = hora;
 
-    return validaData(data);
+    return validaData(data); // Retorna 1 se a data for válida, 0 caso contrário
 }
 
 int validaData(const Data *data)
 {
     erroAssert(data != NULL, "Ponteiro nulo para Data.");
 
+    // Dias por mês (não considerando anos bissextos ainda)
     int diasPorMes[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-    // Calcula ano bissexto
+    // Considera ano bissexto
     if ((data->ano % 4 == 0 && data->ano % 100 != 0) || (data->ano % 400 == 0)) {
         diasPorMes[Feb] = 29;
     }
 
-    // Valida o dia
+    // Validação do dia
     if (data->dia < 1 || data->dia > diasPorMes[data->mes]) return 0;
 
-    // Valida a hora
-    if (data->hora < 0.0f || data->hora >= 24.0f) return 0;
-
-    return 1;
+    return 1; // Data válida
 }
 
 int calculaDiaSemana(const Data *data)
@@ -58,45 +54,39 @@ int calculaDiaSemana(const Data *data)
     int K = ano % 100; // Últimos 2 dígitos do ano
     int J = ano / 100; // Primeiros 2 dígitos do ano
 
-    // Aplica o Algoritmo de Zeller
+    // Algoritmo de Zeller para calcular o dia da semana
     int h = (dia + (13 * (mes + 1)) / 5 + K + (K / 4) + (J / 4) - 2 * J) % 7;
 
-    // Ajusta para valores positivos
-    h = (h + 7) % 7;
-
-    // Retorna o valor ajustado (0: Domingo, ..., 6: Sábado)
-    return (h + 6) % 7;
+    // Ajuste para valores positivos e formato desejado (0 = domingo)
+    return (h + 5) % 7; 
 }
 
 const char *obtemDiaSemana(int diaSemana)
 {
     const char *dias[] = {
-            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
     };
 
-    // Retorna o dia da semana abreviado
     return dias[diaSemana];
 }
 
 const char *obtemNomeMes(meses mes)
 {
-    erroAssert(mes >= Jan && mes <= Dec, "Mes invalido.");
-    // validacao feita na inicializacao de Data
+    erroAssert(mes >= Jan && mes <= Dec, "Mês inválido.");
     return nomeMeses[mes];
 }
 
 const char *transformaHora(const Data *data)
 {
     erroAssert(data != NULL, "Ponteiro nulo para Data.");
-    
-    int hora = (int)data->hora;                                        // obtem a parte inteira
-    int minutos = (int)((data->hora - hora) * 60);                     // converte parte fracionaria em minutos
-    int segundos = (int)((((data->hora - hora) * 60) - minutos) * 60); // parte restante convertida para segundos
 
-    // Buffer estatico para armazenar o resultado
+    int hora = (int)data->hora;                                        // Parte inteira da hora
+    int minutos = (int)((data->hora - hora) * 60);                     // Parte fracionária para minutos
+    int segundos = (int)((((data->hora - hora) * 60) - minutos) * 60); // Resto para segundos
+
+    // Buffer estático para armazenar a string formatada
     static char buffer[9];
-
-    // formatando a string no formato hh:mm:ss
     sprintf(buffer, "%02d:%02d:%02d", hora, minutos, segundos);
+
     return buffer;
 }

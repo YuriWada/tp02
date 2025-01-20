@@ -5,28 +5,34 @@
 #include "fila.h"
 #include "learquivo.h"
 #include "datahora.h"
+#include "procedimento.h"
 
-#define QTDE_FILAS 6 // O programa simula um sistema de 6 filas
+#define QTDE_FILAS 3 // O programa simula um sistema de 6 filas
 
 // Estrutura de um evento no escalonador
 typedef struct
 {
     float tempo; // Tempo do evento (em horas)
-    int tipo;    // Tipo do evento (1: triagem, 2: atendimento, etc.)
+    int indiceAux;    // indiceAux do evento (1: fila triagem, 2: triagem, 3: fila atendimento, 4: atendimento etc.)
     Paciente *paciente;
 } Evento;
 
 // Estrutura principal do TAD Escalonador
 typedef struct
 {
-    DataHora *dataHoraRef;
     Evento *heap;                          // Array usado como Min-Heap
     int tamanho;                           // Número de eventos no heap
     int capacidade;                        // Capacidade máxima do heap
     Configuracoes *config;                 // Ponteiro para configurações do sistema
-    Fila filas[QTDE_FILAS];                // Filas associadas a cada tipo de procedimento
-    float tempoUltimoServico[QTDE_FILAS];  // Tempo do último serviço em cada unidade
-    float tempoOciosoUnidades[QTDE_FILAS]; // Tempo ocioso acumulado por unidade
+    Fila filaTr;
+    Fila filasAt[QTDE_FILAS];              // Filas associadas a triagem
+    Fila filasProc[QTDE_FILAS];
+    Procedimento procedimentoTR;
+    Procedimento procedimentoAT;
+    Procedimento procedimentoMH;
+    Procedimento procedimentoTL;
+    Procedimento procedimentoEI;
+    Procedimento procedimentoIM;
 } Escalonador;
 
 /**
@@ -42,12 +48,16 @@ void desceHeap(Escalonador *escalonador, int indice);
 /**
  * Inicializa o escalonador com uma capacidade inicial
  */
-void inicializaEscalonador(Escalonador *escalonador, DataHora *dataHoraRef, int capacidade, Configuracoes *config);
+void inicializaEscalonador(Escalonador *escalonador, int capacidade, Configuracoes *config);
 
 /**
  * Insere um evento no escalonador
+ * @param escalonador escalonador
+ * @param tempo datahora do paciente
+ * @param indiceAux indice auxiliar
+ * @param paciente paciente associado ao evento escalonado
  */
-void insereEvento(Escalonador *escalonador, float tempo, int tipo, Paciente *paciente);
+void insereEvento(Escalonador *escalonador, float tempo, int indiceAux, Paciente *paciente);
 
 /**
  * Remove e retorna o próximo evento do escalonador
@@ -57,7 +67,7 @@ Evento retiraProximoEvento(Escalonador *escalonador);
 /**
  * Checa se todas as filas estao vazias
  */
-int checaFilas(Escalonador *escalonador);
+int checaFilas(Escalonador *escalonadora);
 
 /**
  * Finaliza o escalonador, liberando recursos e gerando estatísticas

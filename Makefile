@@ -11,7 +11,7 @@ INCLUDE = include
 # Arquivos
 SOURCES = $(wildcard $(SRC)/*.c)
 OBJECTS = $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(SOURCES))
-EXEC = $(BIN)/tp3.out
+EXEC = $(BIN)/tp2.out
 
 # Regras principais
 all: $(EXEC)

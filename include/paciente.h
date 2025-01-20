@@ -44,6 +44,8 @@ typedef struct
     int examesImagem;
     int instrumentosMedicamentos;
 
+    float tempoNaFila;
+
     // Variaveis para obter estatistica paciente
     EstadoPaciente estadoAtual;
     float tempoEspera; // calcula o tempo total nas filas
@@ -79,6 +81,16 @@ void registraTempoEspera(Paciente *paciente, float tempo);
  * Registra tempo de atendimento do paciente em cada atendimento
  */
 void registraTempoAtendimento(Paciente *paciente, float tempo);
+
+/**
+ * Verifica se nao ha mais serviços no hospital
+ */
+int verificaAlta(Paciente *paciente);
+
+/**
+ * Define o proximo estado do paciente
+ */
+void proximoEstado(Paciente *paciente);
 
 /**
  * Transforma a data de entrada e saida do paciente no formato especificado pelo TP

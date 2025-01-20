@@ -4,7 +4,8 @@
  * Inicializa os dados do paciente com os valores fornecidos.
  */
 void inicializaPaciente(Paciente *paciente, int id, int alta, int ano, int mes, int dia, float hora,
-                        int urgencia, int medidasH, int testesL, int examesI, int instrumentosM) {
+                        int urgencia, int medidasH, int testesL, int examesI, int instrumentosM)
+{
     // Atribui valores básicos
     paciente->id = id;
     paciente->alta = alta;
@@ -17,6 +18,8 @@ void inicializaPaciente(Paciente *paciente, int id, int alta, int ano, int mes, 
     paciente->testesLaboratorio = testesL;
     paciente->examesImagem = examesI;
     paciente->instrumentosMedicamentos = instrumentosM;
+
+    paciente->tempoNaFila = 0.0f;
 
     // Inicializa estatísticas
     paciente->estadoAtual = NAO_CHEGOU;
@@ -33,7 +36,8 @@ void inicializaPaciente(Paciente *paciente, int id, int alta, int ano, int mes, 
 /**
  * Atualiza o estado atual do paciente.
  */
-void atualizaEstado(Paciente *paciente, EstadoPaciente novoEstado) {
+void atualizaEstado(Paciente *paciente, EstadoPaciente novoEstado)
+{
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
     paciente->estadoAtual = novoEstado;
 }
@@ -41,7 +45,8 @@ void atualizaEstado(Paciente *paciente, EstadoPaciente novoEstado) {
 /**
  * Registra o tempo de espera total do paciente.
  */
-void registraTempoEspera(Paciente *paciente, float tempo) {
+void registraTempoEspera(Paciente *paciente, float tempo)
+{
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
     paciente->tempoEspera += tempo;
 }
@@ -49,15 +54,179 @@ void registraTempoEspera(Paciente *paciente, float tempo) {
 /**
  * Registra o tempo total de atendimento do paciente.
  */
-void registraTempoAtendimento(Paciente *paciente, float tempo) {
+void registraTempoAtendimento(Paciente *paciente, float tempo)
+{
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
     paciente->tempoAtendimento += tempo;
+}
+
+int verificaAlta(Paciente *paciente)
+{
+    int somaServicos = paciente->medidasHospitalares +
+                       paciente->testesLaboratorio +
+                       paciente->examesImagem +
+                       paciente->instrumentosMedicamentos;
+    return somaServicos;
+}
+
+// Embora seja uma abordagem ruim, usei vários ifs para evitar uma FSM (Maquina de Estados Finita)
+void proximoEstado(Paciente *paciente)
+{
+    erroAssert(paciente != NULL, "Paciente não pode ser nulo.");
+
+    switch (paciente->estadoAtual)
+    {
+    case NAO_CHEGOU:
+        break;
+    case SENDO_ATENDIDO: // Estado 4
+        if (paciente->medidasHospitalares > 0)
+        {
+            paciente->estadoAtual = FILA_MH;
+        }
+        else if (paciente->testesLaboratorio > 0)
+        {
+            paciente->estadoAtual = FILA_TL;
+        }
+        else if (paciente->examesImagem > 0)
+        {
+            paciente->estadoAtual = FILA_EI;
+        }
+        else if (paciente->instrumentosMedicamentos > 0)
+        {
+            paciente->estadoAtual = FILA_IM;
+        }
+        else
+        {
+            paciente->estadoAtual = ALTA_HOSP;
+        }
+        break;
+
+    case FILA_MH: // Estado 5
+        paciente->estadoAtual = REALIZANDO_MH;
+        break;
+
+    case REALIZANDO_MH: // Estado 6
+        paciente->medidasHospitalares--;
+        if (paciente->testesLaboratorio > 0)
+        {
+            paciente->estadoAtual = FILA_TL;
+        }
+        else if (paciente->examesImagem > 0)
+        {
+            paciente->estadoAtual = FILA_EI;
+        }
+        else if (paciente->instrumentosMedicamentos > 0)
+        {
+            paciente->estadoAtual = FILA_IM;
+        }
+        else if (paciente->medidasHospitalares > 0)
+        {
+            paciente->estadoAtual = FILA_MH;
+        }
+        else
+        {
+            paciente->estadoAtual = ALTA_HOSP;
+        }
+        break;
+
+    case FILA_TL: // Estado 7
+        paciente->estadoAtual = REALIZANDO_TL;
+        break;
+
+    case REALIZANDO_TL: // Estado 8
+        paciente->testesLaboratorio--;
+        if (paciente->examesImagem > 0)
+        {
+            paciente->estadoAtual = FILA_EI;
+        }
+        else if (paciente->instrumentosMedicamentos > 0)
+        {
+            paciente->estadoAtual = FILA_IM;
+        }
+        else if (paciente->medidasHospitalares > 0)
+        {
+            paciente->estadoAtual = FILA_MH;
+        }
+        else if (paciente->testesLaboratorio > 0)
+        {
+            paciente->estadoAtual = FILA_TL;
+        }
+        else
+        {
+            paciente->estadoAtual = ALTA_HOSP;
+        }
+        break;
+
+    case FILA_EI: // Estado 9
+        paciente->estadoAtual = REALIZANDO_EI;
+        break;
+
+    case REALIZANDO_EI: // Estado 10
+        paciente->examesImagem--;
+        if (paciente->instrumentosMedicamentos > 0)
+        {
+            paciente->estadoAtual = FILA_IM;
+        }
+        else if (paciente->medidasHospitalares > 0)
+        {
+            paciente->estadoAtual = FILA_MH;
+        }
+        else if (paciente->testesLaboratorio > 0)
+        {
+            paciente->estadoAtual = FILA_TL;
+        }
+        else if (paciente->examesImagem > 0)
+        {
+            paciente->estadoAtual = FILA_EI;
+        }
+        else
+        {
+            paciente->estadoAtual = ALTA_HOSP;
+        }
+        break;
+
+    case FILA_IM: // Estado 11
+        paciente->estadoAtual = REALIZANDO_IM;
+        break;
+
+    case REALIZANDO_IM: // Estado 12
+        paciente->instrumentosMedicamentos--;
+        if (paciente->medidasHospitalares > 0)
+        {
+            paciente->estadoAtual = FILA_MH;
+        }
+        else if (paciente->testesLaboratorio > 0)
+        {
+            paciente->estadoAtual = FILA_TL;
+        }
+        else if (paciente->examesImagem > 0)
+        {
+            paciente->estadoAtual = FILA_EI;
+        }
+        else if (paciente->instrumentosMedicamentos > 0)
+        {
+            paciente->estadoAtual = FILA_IM;
+        }
+        else
+        {
+            paciente->estadoAtual = ALTA_HOSP;
+        }
+        break;
+
+    case ALTA_HOSP: // Estado 13
+        // Paciente já finalizou o tratamento
+        break;
+
+    default:
+        break;
+    }
 }
 
 /**
  * Transforma a data do paciente no formato Dia da Semana e Nome do Mês.
  */
-DiaMes defineDataString(const Paciente *paciente) {
+DiaMes defineDataString(const Paciente *paciente)
+{
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
 
     Data data;
@@ -72,7 +241,8 @@ DiaMes defineDataString(const Paciente *paciente) {
 /**
  * Calcula a data e horário de saída do paciente com base no tempo total de permanência no hospital.
  */
-void calculaSaida(Paciente *paciente) {
+void calculaSaida(Paciente *paciente)
+{
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
 
     // Calcula o tempo total no hospital
@@ -85,13 +255,16 @@ void calculaSaida(Paciente *paciente) {
     dataSaida.hora += tempoTotal;
 
     // Ajusta o horário e a data se ultrapassar limites
-    while (dataSaida.hora >= 24.0f) {
+    while (dataSaida.hora >= 24.0f)
+    {
         dataSaida.hora -= 24.0f;
         dataSaida.dia++;
-        if (!validaData(&dataSaida)) {
+        if (!validaData(&dataSaida))
+        {
             dataSaida.dia = 1;
             dataSaida.mes++;
-            if (dataSaida.mes > Dec) {
+            if (dataSaida.mes > Dec)
+            {
                 dataSaida.mes = Jan;
                 dataSaida.ano++;
             }
@@ -108,7 +281,8 @@ void calculaSaida(Paciente *paciente) {
 /**
  * Imprime as informações do paciente no formato especificado pelo TP.
  */
-void imprimePaciente(const Paciente *paciente) {
+void imprimePaciente(const Paciente *paciente)
+{
     erroAssert(paciente != NULL, "Ponteiro nulo para Paciente.");
 
     // Data de entrada

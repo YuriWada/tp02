@@ -1,9 +1,3 @@
-/**
- * TAD auxiliar para retornar o dia da semana e o mes em string,
- * com base nos dados de entrada. Tambem transforma a hora.
- * Ex.: 2017 3 21 2 
- * Deve retornar 2017 Mar Tue 2:00:00
- */
 #ifndef DATA_H
 #define DATA_H
 
@@ -32,34 +26,34 @@ typedef struct
 } Data;
 
 /**
- * Inicializa as variaveis de data e verifica a validade 
- * das datas de entrada
+ * Inicializa as variáveis de data e verifica a validade 
+ * das datas de entrada.
+ * Retorna 1 para sucesso ou 0 para falha.
  */
 int inicializaData(Data *data, int dia, meses mes, int ano, float hora);
 
 /**
- * Valida a data conforme dia, mes e ano (bissexto)
+ * Valida a data conforme dia, mês e ano (bissexto).
  */
 int validaData(const Data *data);
 
 /**
- * Calcula o dia da semana usando Algoritmo de Zeller
+ * Calcula o dia da semana usando Algoritmo de Zeller.
  */
 int calculaDiaSemana(const Data *data);
 
 /**
- * Retorna o dia da semana em char
- * Os dias estao abreviados em ingles
+ * Retorna o dia da semana em formato abreviado.
  */
 const char* obtemDiaSemana(int diaSemana);
 
 /**
- * Obtem o nome do mês a partir do valor do enum
+ * Retorna o nome do mês a partir do enum.
  */
 const char* obtemNomeMes(meses mes);
 
 /**
- * transforma a hora para o formato hh:mm:ss
+ * Transforma a hora para o formato hh:mm:ss.
  */
 const char* transformaHora(const Data *data);
 
